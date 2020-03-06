@@ -1,0 +1,28 @@
+#!/bin/bash    
+
+fullpath=$1
+
+if [ -z "$fullpath" ]; then
+    echo "No filename supplied"
+    exit 1
+fi
+
+if [ ! -f $fullpath ]; then
+    echo "file $fullpath does not exist"
+    exit 1
+fi
+
+filename=$(basename $1)
+
+uuid=$(date | md5)
+dir=/var/tmp/$uuid
+mkdir $dir
+echo $dir
+
+dcmd="FROM golang:latest\\nWORKDIR /app\\nCOPY . .\\nRUN go build -o main .\\nCMD [\"./main\"]\\n"
+
+echo -e $dcmd > $dir/Dockerfile
+cp $1 $dir/$filename
+
+docker build -t $uuid $dir
+docker run -it $uuid
