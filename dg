@@ -18,7 +18,7 @@ fi
 filename=$(basename $1)
 
 uuid=$(date | md5)
-dir=/var/tmp/$uuid
+dir=/var/tmp/fastdocker/$uuid
 mkdir "$dir"
 echo "$dir"
 
