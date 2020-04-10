@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ETC_DIR=$SCRIPT_DIR/../etc/fastdocker
+
 fullpath=$1
 
 if [ -z "$fullpath" ]; then
@@ -7,7 +10,7 @@ if [ -z "$fullpath" ]; then
     exit 1
 fi
 
-if [ ! -f $fullpath ]; then
+if [ ! -f "$fullpath" ]; then
     echo "file $fullpath does not exist"
     exit 1
 fi
@@ -16,11 +19,11 @@ filename=$(basename $1)
 
 uuid=$(date | md5)
 dir=/var/tmp/$uuid
-mkdir $dir
-echo $dir
+mkdir "$dir"
+echo "$dir"
 
-cp ./Dockerfile $dir/Dockerfile
-cp $1 $dir/$filename
+cp "$ETC_DIR"/Dockerfile $dir/Dockerfile
+cp "$1" "$dir"/"$filename"
 
-docker build -t $uuid $dir
-docker run -it $uuid
+docker build -t "$uuid" "$dir"
+docker run -it "$uuid"
