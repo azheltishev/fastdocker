@@ -1,4 +1,4 @@
-#!/bin/bash    
+#!/bin/bash
 
 fullpath=$1
 
@@ -19,9 +19,7 @@ dir=/var/tmp/$uuid
 mkdir $dir
 echo $dir
 
-dcmd="FROM golang:latest\\nWORKDIR /app\\nCOPY . .\\nRUN go build -o main .\\nCMD [\"./main\"]\\n"
-
-echo -e $dcmd > $dir/Dockerfile
+cp ./Dockerfile $dir/Dockerfile
 cp $1 $dir/$filename
 
 docker build -t $uuid $dir
