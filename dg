@@ -37,6 +37,9 @@ if [ $# -gt 1 ]; then
   cp "$INPUT_FILE" "$WORKDIR"/"$INPUT_FILE"
 fi
 
+docker build -t "$UUID" "$WORKDIR" > "$WORKDIR/log"
+docker run -it "$UUID" >> "$WORKDIR/log"
 
-docker build -t "$UUID" "$WORKDIR"
-docker run -it "$UUID"
+CONTAINER_ID=$(docker ps -aqf ancestor="$UUID" -n 1)
+mkdir "$WORKDIR/app"
+docker cp "$CONTAINER_ID:/app" "$WORKDIR"
