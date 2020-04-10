@@ -3,27 +3,40 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ETC_DIR=$SCRIPT_DIR/../etc/fastdocker
 
-fullpath=$1
+PATH_TO_GO_FILE=$1
 
-if [ -z "$fullpath" ]; then
-    echo "No filename supplied"
+if [ -z "$PATH_TO_GO_FILE" ]; then
+    echo "no file supplied"
     exit 1
 fi
 
-if [ ! -f "$fullpath" ]; then
-    echo "file $fullpath does not exist"
+if [ ! -f "$PATH_TO_GO_FILE" ]; then
+    echo "file $PATH_TO_GO_FILE does not exist"
     exit 1
 fi
 
-filename=$(basename $1)
+GO_FILE=$(basename "$1")
 
-uuid=$(date | md5)
-dir=/var/tmp/fastdocker/$uuid
-mkdir -p "$dir"
-echo "$dir"
+UUID=$(date | md5)
+WORKDIR=/var/tmp/fastdocker/$UUID
+mkdir -p "$WORKDIR"
+echo "$WORKDIR"
 
-cp "$ETC_DIR"/Dockerfile $dir/Dockerfile
-cp "$1" "$dir"/"$filename"
+cp "$ETC_DIR"/Dockerfile "$WORKDIR"/Dockerfile
+cp "$1" "$WORKDIR"/"$GO_FILE"
 
-docker build -t "$uuid" "$dir"
-docker run -it "$uuid"
+if [ $# -gt 1 ]; then
+  PATH_TO_INPUT_FILE=$2
+  INPUT_FILE=$(basename "$PATH_TO_INPUT_FILE")
+
+  if [ ! -f "$PATH_TO_INPUT_FILE" ]; then
+    echo "file $PATH_TO_INPUT_FILE does not exist"
+    exit 1
+  fi
+
+  cp "$INPUT_FILE" "$WORKDIR"/"$INPUT_FILE"
+fi
+
+
+docker build -t "$UUID" "$WORKDIR"
+docker run -it "$UUID"
