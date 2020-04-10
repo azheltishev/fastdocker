@@ -19,7 +19,7 @@ filename=$(basename $1)
 
 uuid=$(date | md5)
 dir=/var/tmp/fastdocker/$uuid
-mkdir "$dir"
+mkdir -p "$dir"
 echo "$dir"
 
 cp "$ETC_DIR"/Dockerfile $dir/Dockerfile
